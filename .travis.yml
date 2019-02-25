@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+- stable
+- '8'
+- '6'
+after_success:
+- npm run build
+deploy:
+  provider: npm
+  email: "$NPM_EMAIL"
+  api_key:
+    secure: smptmoTUuH/aLhv+GcKIJmxkSgU/iemHpC+ZTbQAVreUTKV9PY+X1EJqBFEPP1zx/8pa1227RV9J0fUbRZU8N6nTybCZ8HbqEqtRPlKNk6bP1mAM+JxCWbX1elA9tp4Z1dypkikpA3UszxQcJRLRjFYtSmVmg0oTl8+G2kp60tlsUTooh4jFki17zuIPXmwDDcV9wSjpR3NiJQzoX0tyEPATsV8feXWNeFytcV5u8h9xiLfQ7a75AK7tMpBHtrh5C+kfxjwFBrVYKH9HwYM21ET2GCCr+D/n85r9/iPDg/U/JmSfuSukyCuEcvta/3bXMZVJcwv/FAzeD3FjVtx2BgOYtO1bYQxpe4RBvnLV3Ut7/68DRWuheL+/LQs9liA/b4aENJGl8EkisiSLvSLTtZ0iSUi0afI/sEjnNdmn28jC58iSD+1+/NF0QqWRpiBKrjYUpZs7fk+qcZPGpWvX+KB7p/tNyLWOL9WcP4ONERVhTxq+BiaTFvrhyJ/p3GWu70xJCd6ILa3dxFSZmD8v0V5SF81BiINftc2sNUWl7R4m7rhyUu+6/v3iqshZw/qfRb5gtbHUUsXwwIPK0OfOHP8T0jzw5X5nD+fWYHaWK8iZykMhKJySn7QdTvbbGZ/MHJcOFykSJXJUxmCDD6+XG5jdCf8E4hEwKeRXyOGO3vs=
+  on:
+    tags: true
+    repo: up9cloud/gatsby-remark-gemoji-to-image
+    branch: master
+  skip_cleanup: true
