@@ -1,5 +1,7 @@
 # gatsby-remark-gemoji-to-image
 
+[![Build Status](https://travis-ci.org/up9cloud/gatsby-remark-gemoji-to-image.svg?branch=master)](https://travis-ci.org/up9cloud/gatsby-remark-gemoji-to-image)
+
 Convert [Github offcial gemoji](https://github.com/github/gemoji) to image element.
 
 ## Installation
