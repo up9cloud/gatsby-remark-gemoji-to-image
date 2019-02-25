@@ -1,7 +1,7 @@
 {
   "name": "gatsby-remark-gemoji-to-image",
   "author": "up9cloud (https://github.com/up9cloud)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "gatsby",
     "gatsby-plugin",
@@ -10,7 +10,7 @@
     "emoji",
     "gemoji"
   ],
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "build-aliases": "wget https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json -O -|node build/aliases.js",
@@ -22,7 +22,7 @@
     "unist-util-visit": "^1.4.0"
   },
   "files": [
-    "dist/main.js",
+    "dist/index.js",
     "README.md"
   ],
   "devDependencies": {
