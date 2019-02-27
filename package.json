@@ -13,7 +13,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build-aliases": "wget https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json -O -|node build/aliases.js",
+    "build:aliases": "wget https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json -O -|node build/aliases.js",
     "build": "webpack --config build/webpack.config.js",
     "test": "jest --coverage"
   },
