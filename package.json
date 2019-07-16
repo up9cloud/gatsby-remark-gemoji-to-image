@@ -19,17 +19,17 @@
   },
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
-    "unist-util-visit": "^1.4.0"
+    "unist-util-visit": "^1.4.1"
   },
   "files": [
     "index.js",
     "README.md"
   ],
   "devDependencies": {
-    "jest": "^24.1.0",
+    "jest": "^24.8.0",
     "remark": "^10.0.1",
-    "webpack": "^4.29.5",
-    "webpack-cli": "^3.2.3"
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.6"
   },
   "peerDependencies": {
     "debug": "^4.1.1"
