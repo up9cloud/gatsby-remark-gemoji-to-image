@@ -10,7 +10,7 @@ Convert [Github offcial gemoji](https://github.com/github/gemoji) to image eleme
 npm i gatsby-remark-gemoji-to-image
 ```
 
-## Usage
+## Usage :joy:
 
 ```js
 // gatsby-config.js
@@ -28,7 +28,7 @@ module.exports = {
 }
 ```
 
-## Options
+## Options :sob:
 
 ```js
 // gatsby-config.js

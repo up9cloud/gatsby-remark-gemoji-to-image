@@ -1,3 +1,5 @@
+const { name } = require('../package.json')
+const debug = require('debug')(name)
 const visit = require('unist-util-visit')
 const escape = require('escape-string-regexp')
 
@@ -10,32 +12,44 @@ function transformer (ast, { regex, base, ext, height }) {
     let match
 
     while ((match = regex.exec(node.value)) !== null) {
-      let emoji = match[0]
+      const emojiStr = match[0]
+      debug(`found a emoji "${emojiStr}" from text "${node.value}"`)
 
       if (match.index !== lastIndex) {
-        definitions.push(extractText(node.value, lastIndex, match.index))
+        const textAst = extractText(node, lastIndex, match.index)
+        debug(`extract text "${textAst.value}"`)
+        definitions.push(textAst)
       }
+      lastIndex = match.index + emojiStr.length
 
-      definitions.push(makeImageAst(emoji, { base, ext, height }))
+      const emojiAst = extractEmoji(node, match.index, lastIndex, { base, ext, height })
+      debug(`extract emoji "${emojiStr}" and convert it to`, emojiAst)
+      definitions.push(emojiAst)
 
-      lastIndex = match.index + emoji.length
+      debug(`move check start index to ${lastIndex}`)
     }
 
     if (lastIndex !== node.value.length) {
-      definitions.push(extractText(node.value, lastIndex, node.value.length))
+      const textAst = extractText(node, lastIndex, node.value.length)
+      debug(`extract text "${textAst.value}"`)
+      definitions.push(textAst)
     }
 
-    let last = parent.children.slice(index + 1)
-    parent.children = parent.children.slice(0, index)
-    parent.children = parent.children.concat(definitions)
-    parent.children = parent.children.concat(last)
+    parent.children = [
+      ...parent.children.slice(0, index),
+      ...definitions,
+      ...parent.children.slice(index + 1)
+    ]
   }
 
   visit(ast, 'text', visitor)
 }
 
-function makeImageAst (emojiStr, { height, base, ext }) {
-  let name = emojiStr.substr(1, emojiStr.length - 2)
+function extractEmoji (node, start, end, { height, base, ext }) {
+  let tNode = extractText(node, start, end)
+  let emojiStr = tNode.value
+  delete tNode.value
+  const name = emojiStr.substr(1, emojiStr.length - 2)
   return {
     type: 'image',
     title: emojiStr,
@@ -49,25 +63,49 @@ function makeImageAst (emojiStr, { height, base, ext }) {
         style: `height: ${height}`
       },
       hChildren: []
-    }
+    },
+    position: tNode.position
   }
 }
-function extractText (string, start, end) {
-  var startLine = string.slice(0, start).split('\n')
-  var endLine = string.slice(0, end).split('\n')
-
+function extractText ({ value, position }, start, end) {
+  let startLine = position.start.line
+  let endLine = position.start.line
+  let startColumn = position.start.column + start
+  let endColumn = position.start.column + end
+  let prev = 0
+  for (const [i, m] of [...value.matchAll('\n')].entries()) {
+    if (start <= m.index) {
+      startLine = position.start.line + i
+      if (i > 0) {
+        startColumn = start - prev + 1
+      }
+    }
+    if (end <= m.index) {
+      endLine = position.start.line + i
+      if (i > 0) {
+        endColumn = end - prev + 1
+      }
+    }
+    prev = m.index
+  }
   return {
     type: 'text',
-    value: string.slice(start, end),
+    value: value.slice(start, end),
+    // TODO: it should be Position instance?
     position: {
       start: {
-        line: startLine.length,
-        column: startLine[startLine.length - 1].length + 1
+        line: startLine,
+        column: startColumn,
+        offset: position.start.offset + start
       },
       end: {
-        line: endLine.length,
-        column: endLine[endLine.length - 1].length + 1
-      }
+        line: endLine,
+        column: endColumn,
+        offset: position.start.offset + end
+      },
+      // TODO: handle indent
+      // @see https://github.com/remarkjs/remark/blob/475c72b823ed1b2b3e0a2d12b2829e4b4c421ee8/packages/remark-parse/lib/tokenizer.js#L169
+      indent: []
     }
   }
 }
