@@ -1,4 +1,6 @@
 const Remark = require('remark')
+const { cssifyObject } = require('css-in-js-utils')
+
 const plugin = require('../index.js')
 // const plugin = require(path.join(__dirname, '..', '..', 'dist', 'index.js'))
 
@@ -50,7 +52,7 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           'hName': 'img',
           'hProperties': {
             'className': defaultOptions.class,
-            'style': defaultOptions.style },
+            'style': cssifyObject(defaultOptions.style) },
           'hChildren': []
         },
         'position': {
@@ -83,7 +85,7 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           'hName': 'img',
           'hProperties': {
             'className': defaultOptions.class,
-            'style': defaultOptions.style },
+            'style': cssifyObject(defaultOptions.style) },
           'hChildren': []
         },
         'position': {
@@ -126,7 +128,7 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           'hName': 'img',
           'hProperties': {
             'className': defaultOptions.class,
-            'style': defaultOptions.style },
+            'style': cssifyObject(defaultOptions.style) },
           'hChildren': []
         },
         'position': {
@@ -169,7 +171,7 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           'hName': 'img',
           'hProperties': {
             'className': defaultOptions.class,
-            'style': defaultOptions.style },
+            'style': cssifyObject(defaultOptions.style) },
           'hChildren': []
         },
         'position': {
@@ -224,7 +226,7 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           'hName': 'img',
           'hProperties': {
             'className': options.class,
-            'style': options.style,
+            'style': cssifyObject(options.style),
             'align': 'middle' },
           'hChildren': []
         },
@@ -261,10 +263,10 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           'hName': 'img',
           'hProperties': {
             'className': defaultOptions.class,
-            'style': {
+            'style': cssifyObject({
               ...defaultOptions.style,
               height: options.height
-            }
+            })
           },
           'hChildren': []
         },

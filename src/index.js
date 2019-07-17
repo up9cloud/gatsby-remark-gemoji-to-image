@@ -1,6 +1,7 @@
 const debug = require('debug')('gatsby:gatsby-remark-gemoji-to-image')
 const visit = require('unist-util-visit')
 const escape = require('escape-string-regexp')
+const { cssifyObject } = require('css-in-js-utils')
 
 const gemojiAliases = require('./gemoji-aliases.js')
 
@@ -141,7 +142,7 @@ module.exports = (
     ext,
     props: {
       className,
-      style,
+      style: cssifyObject(style),
       ...args
     }
   })
