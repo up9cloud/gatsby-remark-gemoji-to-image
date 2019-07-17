@@ -10,7 +10,7 @@
     "emoji",
     "gemoji"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "build:aliases": "wget https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json -O -|node build/aliases.js",
@@ -22,14 +22,15 @@
     "unist-util-visit": "^1.4.1"
   },
   "files": [
-    "index.js",
+    "dist/index.js",
     "README.md"
   ],
   "devDependencies": {
     "jest": "^24.8.0",
     "remark": "^10.0.1",
     "webpack": "^4.35.3",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^3.3.6",
+    "webpack-node-externals": "^1.7.2"
   },
   "peerDependencies": {
     "debug": "^4.1.1"

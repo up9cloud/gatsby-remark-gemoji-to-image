@@ -1,5 +1,6 @@
-const { name } = require('../package.json')
-const debug = require('debug')(name)
+const path = require('path')
+
+const debug = require('debug')('gatsby:gatsby-remark-gemoji-to-image')
 const visit = require('unist-util-visit')
 const escape = require('escape-string-regexp')
 
