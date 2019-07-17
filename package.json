@@ -10,7 +10,7 @@
     "emoji",
     "gemoji"
   ],
-  "main": "dist/index.js",
+  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "build:aliases-gemoji-json": "wget https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json -O -|node build/aliases-gemoji-json.js",
@@ -23,6 +23,7 @@
     "unist-util-visit": "^1.4.1"
   },
   "files": [
+    "index.js",
     "dist/index.js",
     "README.md"
   ],

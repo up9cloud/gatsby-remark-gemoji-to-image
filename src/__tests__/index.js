@@ -4,6 +4,7 @@ const path = require('path')
 const Remark = require('remark')
 const visit = require(`unist-util-visit`)
 const plugin = require('../index.js')
+//const plugin = require(path.join(__dirname, '..', '..', 'dist', 'index.js'))
 
 // function oLog (o) {
 //   return util.inspect(o, {
