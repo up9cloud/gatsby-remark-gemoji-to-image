@@ -15,7 +15,7 @@
   "scripts": {
     "build:aliases": "wget https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json -O -|node build/aliases.js",
     "build": "webpack --config build/webpack.config.js",
-    "test": "DEBUG=gatsby* jest --coverage"
+    "test": "DEBUG_DEPTH=10 DEBUG=gatsby* jest --coverage"
   },
   "dependencies": {
     "escape-string-regexp": "^1.0.5",

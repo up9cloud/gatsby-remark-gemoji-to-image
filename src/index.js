@@ -13,25 +13,25 @@ function transformer (ast, { regex, base, ext, height }) {
 
     while ((match = regex.exec(node.value)) !== null) {
       const emojiStr = match[0]
-      debug(`found a emoji "${emojiStr}" from text "${node.value}"`)
+      debug(`found a emoji "%s" from text "%s"`, emojiStr, node.value)
 
       if (match.index !== lastIndex) {
         const textAst = extractText(node, lastIndex, match.index)
-        debug(`extract text "${textAst.value}"`)
+        debug(`extract text "%s"`, textAst.value)
         definitions.push(textAst)
       }
       lastIndex = match.index + emojiStr.length
 
       const emojiAst = extractEmoji(node, match.index, lastIndex, { base, ext, height })
-      debug(`extract emoji "${emojiStr}" and convert it to`, emojiAst)
+      debug(`extract emoji "%s" and convert it to %o`, emojiStr, emojiAst)
       definitions.push(emojiAst)
 
-      debug(`move check start index to ${lastIndex}`)
+      debug('move check start index to %d', lastIndex)
     }
 
     if (lastIndex !== node.value.length) {
       const textAst = extractText(node, lastIndex, node.value.length)
-      debug(`extract text "${textAst.value}"`)
+      debug(`extract text "%s"`, textAst.value)
       definitions.push(textAst)
     }
 
@@ -132,6 +132,8 @@ module.exports = (
   } = {}
 ) => {
   let regex = create()
+  debug(`original ast: %O`, markdownAST)
   transformer(markdownAST, { regex, base, ext, height })
+  debug(`transformed ast: %O`, markdownAST)
   return markdownAST
 }
