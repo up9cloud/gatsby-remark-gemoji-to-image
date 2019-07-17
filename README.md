@@ -10,7 +10,7 @@ Convert [Github offcial gemoji](https://github.com/github/gemoji) to image eleme
 npm i gatsby-remark-gemoji-to-image
 ```
 
-## Usage :joy:
+## Usage
 
 ```js
 // gatsby-config.js
@@ -28,7 +28,7 @@ module.exports = {
 }
 ```
 
-## Options :sob:
+## Options
 
 ```js
 // gatsby-config.js
@@ -42,9 +42,16 @@ module.exports = {
             resolve: 'gatsby-remark-gemoji-to-image',
             // default options, can be ignored
             options: {
-              base: 'https://github.githubassets.com/images/icons/emoji/',
-              ext: '.png',
-              height: '1.2em'
+              base = 'https://github.githubassets.com/images/icons/emoji/',
+              ext = '.png',
+              class: ['emoji'],
+              style = {
+                height: '1.2em',
+                display: 'inline',
+                position: 'relative',
+                top: '0.15em',
+                margin: 0
+              }
             }
           }
         ]
@@ -54,7 +61,7 @@ module.exports = {
 }
 ```
 
-## How?
+## How it works?
 
 ```md
 :octocat:
@@ -81,11 +88,16 @@ to
   data: {
     hName: 'img',
     hProperties: {
-      align: 'absmiddle',
-      alt: ':octocat:',
       className: ['emoji'],
-      style: `height: 1.2em`
+      style: {
+        height: '1.2em',
+        display: 'inline',
+        position: 'relative',
+        top: '0.15em',
+        margin: 0
+      }
     },
-  }
+  },
+  position: [...]
 }
 ```

@@ -1,12 +1,10 @@
-const path = require('path')
-
 const debug = require('debug')('gatsby:gatsby-remark-gemoji-to-image')
 const visit = require('unist-util-visit')
 const escape = require('escape-string-regexp')
 
 const gemojiAliases = require('./gemoji-aliases.js')
 
-function transformer (ast, { regex, base, ext, height }) {
+function transformer (ast, regex, { base, ext, props }) {
   function visitor (node, index, parent) {
     let definitions = []
     let lastIndex = 0
@@ -14,25 +12,29 @@ function transformer (ast, { regex, base, ext, height }) {
 
     while ((match = regex.exec(node.value)) !== null) {
       const emojiStr = match[0]
-      debug(`found a emoji "%s" from text "%s"`, emojiStr, node.value)
+      debug(`found an emoji alias "%s" from text "%s"`, emojiStr, node.value)
 
       if (match.index !== lastIndex) {
         const textAst = extractText(node, lastIndex, match.index)
-        debug(`extract text "%s"`, textAst.value)
+        debug(`extract text "%s" to be %o`, textAst.value, textAst)
         definitions.push(textAst)
       }
       lastIndex = match.index + emojiStr.length
 
-      const emojiAst = extractEmoji(node, match.index, lastIndex, { base, ext, height })
-      debug(`extract emoji "%s" and convert it to %o`, emojiStr, emojiAst)
+      const emojiAst = extractEmoji(node, match.index, lastIndex, { base, ext, props })
+      debug(`extract emoji "%s" to be %o`, emojiStr, emojiAst)
       definitions.push(emojiAst)
 
       debug('move check start index to %d', lastIndex)
     }
 
+    if (!definitions.length) {
+      return
+    }
+
     if (lastIndex !== node.value.length) {
       const textAst = extractText(node, lastIndex, node.value.length)
-      debug(`extract text "%s"`, textAst.value)
+      debug(`extract text "%s" to be %o`, textAst.value, textAst)
       definitions.push(textAst)
     }
 
@@ -43,10 +45,12 @@ function transformer (ast, { regex, base, ext, height }) {
     ]
   }
 
+  debug(`original ast: %o`, ast)
   visit(ast, 'text', visitor)
+  debug(`transformed ast: %o`, ast)
 }
 
-function extractEmoji (node, start, end, { height, base, ext }) {
+function extractEmoji (node, start, end, { base, ext, props }) {
   let tNode = extractText(node, start, end)
   let emojiStr = tNode.value
   delete tNode.value
@@ -59,9 +63,7 @@ function extractEmoji (node, start, end, { height, base, ext }) {
     data: {
       hName: 'img',
       hProperties: {
-        align: 'absmiddle',
-        className: ['emoji'],
-        style: `height: ${height}`
+        ...props
       },
       hChildren: []
     },
@@ -69,26 +71,16 @@ function extractEmoji (node, start, end, { height, base, ext }) {
   }
 }
 function extractText ({ value, position }, start, end) {
-  let startLine = position.start.line
-  let endLine = position.start.line
-  let startColumn = position.start.column + start
-  let endColumn = position.start.column + end
-  let prev = 0
-  for (const [i, m] of [...value.matchAll('\n')].entries()) {
-    if (start <= m.index) {
-      startLine = position.start.line + i
-      if (i > 0) {
-        startColumn = start - prev + 1
-      }
-    }
-    if (end <= m.index) {
-      endLine = position.start.line + i
-      if (i > 0) {
-        endColumn = end - prev + 1
-      }
-    }
-    prev = m.index
-  }
+  const startMatches = [...value.slice(0, start).matchAll('\n')]
+  let startLine = position.start.line + startMatches.length
+  let startColumn = startMatches.length
+    ? start - startMatches[startMatches.length - 1].index
+    : position.start.column + start
+  const endMatches = [...value.slice(0, end).matchAll('\n')]
+  let endLine = position.start.line + endMatches.length
+  let endColumn = endMatches.length
+    ? end - endMatches[endMatches.length - 1].index
+    : position.start.column + end
   return {
     type: 'text',
     value: value.slice(start, end),
@@ -110,7 +102,7 @@ function extractText ({ value, position }, start, end) {
     }
   }
 }
-function create () {
+function createRegex () {
   let names = []
 
   for (const alias of gemojiAliases) {
@@ -129,12 +121,29 @@ module.exports = (
   {
     base = 'https://github.githubassets.com/images/icons/emoji/',
     ext = '.png',
-    height = '1.2em'
+    class: className = ['emoji'],
+    height = null, // v1.0.x compatible
+    style = {
+      height: '1.2em', // github default, class "g-emoji"
+      display: 'inline',
+      position: 'relative',
+      top: '0.15em',
+      margin: 0
+    },
+    ...args
   } = {}
 ) => {
-  let regex = create()
-  debug(`original ast: %O`, markdownAST)
-  transformer(markdownAST, { regex, base, ext, height })
-  debug(`transformed ast: %O`, markdownAST)
+  if (height !== null && style) {
+    style.height = height
+  }
+  transformer(markdownAST, createRegex(), {
+    base,
+    ext,
+    props: {
+      className,
+      style,
+      ...args
+    }
+  })
   return markdownAST
 }
