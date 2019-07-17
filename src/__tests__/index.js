@@ -25,9 +25,11 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
 
   it(`parse ':octocat:'`, async () => {
     const markdownAST = remark.parse(`:octocat:`)
-    const transformed = plugin({ markdownAST })
+    plugin({ markdownAST })
 
-    visit(transformed, `image`, node => {
+    let count = 0
+    visit(markdownAST, `image`, node => {
+      count++
       expect(node).toEqual({
         'type': 'image',
         'title': ':octocat:',
@@ -56,12 +58,15 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
         }
       })
     })
+    expect(count).toEqual(1)
   })
   it(`parse ':octocat: foo :joy: bar'`, async () => {
     const markdownAST = remark.parse(`:octocat: foo :joy: bar`)
-    const transformed = plugin({ markdownAST })
+    plugin({ markdownAST })
 
-    visit(transformed, `text`, (node, index) => {
+    let count = 0
+    visit(markdownAST, `text`, (node, index) => {
+      count++
       switch (index) {
         case 1:
           expect(node.value).toBe(` foo `)
@@ -73,7 +78,8 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           throw new Error(`Unexpected index: ${index}`)
       }
     })
-    visit(transformed, `image`, (node, index) => {
+    visit(markdownAST, `image`, (node, index) => {
+      count++
       switch (index) {
         case 0:
           expect(node).toEqual({
@@ -137,15 +143,15 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           throw new Error(`Unexpect index: ${index}`)
       }
     })
+    expect(count).toEqual(4)
   })
   it(`parse README.md`, async () => {
     const readme = fs.readFileSync(path.join(__dirname, '..', '..', 'README.md'), 'utf8')
 
     const markdownAST = remark.parse(readme)
     // console.log(oLog(markdownAST))
-
-    const transformed = plugin({ markdownAST })
-    // console.log(oLog(transformed))
+    plugin({ markdownAST })
+    // console.log(oLog(markdownAST))
 
     // visit(transformed, `text`, (node, index) => {
     //   switch (index) {
@@ -153,7 +159,9 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
     //       console.log(index, node)
     //   }
     // })
-    visit(transformed, `image`, (node, index) => {
+    let count = 0
+    visit(markdownAST, `image`, (node, index) => {
+      count++
       switch (index) {
         case 1:
           switch (node.title) {
@@ -218,8 +226,10 @@ describe(`gatsby-remark-gemoji-to-image`, () => {
           }
           break
         default:
+          count--
           // console.log(index, node)
       }
     })
+    expect(count).toEqual(2)
   })
 })
