@@ -29,7 +29,7 @@
     "README.md"
   ],
   "devDependencies": {
-    "jest": "^24.8.0",
+    "jest": "^26.0.1",
     "remark": "^10.0.1",
     "webpack": "^4.36.1",
     "webpack-cli": "^3.3.6",
