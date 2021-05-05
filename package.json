@@ -21,7 +21,7 @@
   "dependencies": {
     "css-in-js-utils": "^3.0.2",
     "escape-string-regexp": "^2.0.0",
-    "unist-util-visit": "^1.4.1"
+    "unist-util-visit": "^3.0.1"
   },
   "files": [
     "index.js",
